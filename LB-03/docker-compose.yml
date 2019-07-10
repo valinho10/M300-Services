@@ -1,0 +1,32 @@
+version: '3.3' #compose file version 
+
+services:
+ #DB / MYSQL Service
+  db:
+    image: mysql:5.7
+    restart: always #immer neustarten des Containers
+    volumes:
+      - db_data:/var/lib/mysql #location wo es abgelegt wird
+    environment:
+      MYSQL_ROOT_PASSWORD: password #password von MYSQL
+      MYSQL_DATABASE: wordpress #MYSQL Datenbank
+
+#Wordpress Service
+  wordpress:
+    image: wordpress
+    restart: always #immer neustarten des Containers
+    volumes:
+      - ./wp_data:/var/www/html #location wo es abgelegt wird
+    ports:
+      - "8080:80" #von Port 80 auf port 8080 weitergeleitet
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: password
+    depends_on:
+       - db #wartet bis DB gestartet ist. Vorher wird es nicht gestartet!
+
+volumes:
+    db_data:
+    wp_data:
